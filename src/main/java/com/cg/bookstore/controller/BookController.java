@@ -3,9 +3,12 @@ package com.cg.bookstore.controller;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,10 +21,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.cg.bookstore.entities.Book;
 import com.cg.bookstore.exceptions.NoBookException;
 import com.cg.bookstore.repository.IBookRepository;
-import com.cg.bookstore.service.IBookService;
+import com.cg.bookstore.serviceImplementation.IBookService;
 
 @RestController
 @RequestMapping("/BookManagement")
+@CrossOrigin
 public class BookController  {
   @Autowired
   IBookService iBookSer;
@@ -38,14 +42,20 @@ public class BookController  {
 	  else
 	  return new ResponseEntity<List<Book>>(list, HttpStatus.OK);
   }
+//  @PostMapping(path="/createBook")
+//  public ResponseEntity<Book> createBook(@Valid @RequestBody Book book)
+//  {
+//	  Optional<Book> opi=iBookSer.createBook(book);
+//	  return new ResponseEntity<Book>(opi.get(), HttpStatus.OK); 
+//  }
   @PostMapping(path="/createBook")
-  public ResponseEntity<Book> createBook(@RequestBody Book book)
+  public String createBook(@Valid @RequestBody Book book)
   {
 	  Optional<Book> opi=iBookSer.createBook(book);
-	  return new ResponseEntity<Book>(opi.get(), HttpStatus.OK); 
+	  return "Book Added"; 
   }
   
-  @DeleteMapping(path="/deleteBook{bookId}")
+  @DeleteMapping(path="/deleteBook/{bookId}")
   public ResponseEntity<List<Book>> deleteBook(@PathVariable Integer bookId)
   {
 	  List<Book> bookObj= iBookSer.deleteBook(bookId);
@@ -61,7 +71,7 @@ public class BookController  {
 	  return new ResponseEntity<List<Book>>(list, HttpStatus.OK);
   }
   @PutMapping(path="/editBook/{id}")
-  public ResponseEntity<Book> editBooks(@RequestBody Book book,@PathVariable Integer id)
+  public ResponseEntity<Book> editBooks(@Valid @RequestBody Book book,@PathVariable Integer id)
   {
 	  Book bookObj=iBookSer.editBook(book,id);
 	  if(bookObj==null)

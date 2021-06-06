@@ -15,7 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.cg.bookstore.entities.Book;
 import com.cg.bookstore.entities.Category;
 import com.cg.bookstore.repository.IBookRepository;
-import com.cg.bookstore.service.IBookService;
+import com.cg.bookstore.serviceImplementation.IBookService;
 
 @SpringBootTest
 public class BookModuleTests extends BookManagementApplicationTests{
@@ -28,12 +28,9 @@ IBookService ibookSer;
 
 @Test
 void getBooksByTitle() {
-	Book b=new Book(7,"Maths","Ramanujan","Mathematics","aaaa",450.00,LocalDate.now(),
-		LocalDate.now(),new Category());
-	ibookRepo.save(b);
 	List<Book> book1=ibookRepo.findByTitle("Maths");
 	Optional<Book> book2=ibookRepo.findById(7);
-	assertThat(book2.isPresent()).isEqualTo(!book1.isEmpty());		
+	assertThat(!book1.isEmpty()).isEqualTo(book2.isPresent());		
 }	
 @Test
 void getAllBooks() {
@@ -41,25 +38,24 @@ void getAllBooks() {
 	List<Book> list=ibookRepo.findAll();
 	 assertEquals(count,list.size());	
 }
-@Test
-void createBook() {
-	Book b=new Book(6,"wingsOfFire","Abdul Kalam","Life Story","vvv",450.00,LocalDate.now(),
-		LocalDate.now(),new Category());
-	List<Book> book1=ibookRepo.findAll();
-	ibookRepo.save(b);
-	List<Book> book2=ibookRepo.findAll();
-	assertThat(book1.size()+1).isEqualTo(book2.size());		
-}
+
 @Test
 void delete() {
 	List<Book> book1=ibookRepo.findAll();
-	List<Book> book2=ibookSer.deleteBook(5);
+	List<Book> book2=ibookSer.deleteBook(4);
 	 assertThat(book1.size()-1).isEqualTo(book2.size());
 }
 @Test
 void update() {
-	Optional<Book> b=ibookRepo.findById(1);
-	Book book=ibookSer.editBook(b.get(),1);
-	assertThat(ibookRepo.count()).isEqualTo(ibookRepo.bookCount());
+//	Optional<Book> b=ibookRepo.findById(3);
+//	Book book=ibookSer.editBook(b.get(),3);
+//	assertThat(ibookRepo.count()).isEqualTo(ibookRepo.bookCount());
+	Book book = ibookRepo.findById(3).get();
+	book.setAuthor("SahithiReddy");
+	ibookSer.editBook(book, 3);
+
+	Book afterUpdation = ibookRepo.findById(3).get();
+	assertThat(afterUpdation.getAuthor()).isEqualTo("SahithiReddy");
+
 }
 }

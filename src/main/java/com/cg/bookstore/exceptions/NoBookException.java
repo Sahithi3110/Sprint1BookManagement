@@ -1,5 +1,5 @@
-package com.cg.bookstore.exceptions;
 
+package com.cg.bookstore.exceptions;
 
 
 public class NoBookException extends RuntimeException{

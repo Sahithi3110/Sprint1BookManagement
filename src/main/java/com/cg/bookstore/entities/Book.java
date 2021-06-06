@@ -8,6 +8,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
@@ -16,14 +17,16 @@ import javax.validation.constraints.Size;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 public class Book {
     @Id
-   // @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.AUTO)
 	private int bookId;
     
+    private int quantity;
     @NotNull
     @Size(min=1,message="required")  
 	private String title;
@@ -47,10 +50,21 @@ public class Book {
 	private LocalDate lastUpdatedOn;
 	
 	
-	 @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL,mappedBy="book")
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "category_id", referencedColumnName = "categoryId")
 	 private Category category;
 	 
 	public Book() {}
+	
+	public int getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
+	}
+
 	public int getBookId() {
 		return bookId;
 	}
@@ -106,12 +120,14 @@ public class Book {
 	public void setLastUpdatedOn(LocalDate lastUpdatedOn) {
 		this.lastUpdatedOn = lastUpdatedOn;
 	}
-	public Book(int bookId, @NotNull @Size(min = 1, message = "required") String title,
+
+	public Book(int bookId, int quantity, @NotNull @Size(min = 1, message = "required") String title,
 			@NotNull @Size(min = 1, message = "required") String author, String description, String isbn,
 			@DecimalMin("20.0") double price, @NotNull(message = "Please provide a date.") LocalDate publishDate,
 			@NotNull(message = "Please provide a date.") LocalDate lastUpdatedOn, Category category) {
 		super();
 		this.bookId = bookId;
+		this.quantity = quantity;
 		this.title = title;
 		this.author = author;
 		this.description = description;
@@ -121,6 +137,7 @@ public class Book {
 		this.lastUpdatedOn = lastUpdatedOn;
 		this.category = category;
 	}
+	
 	
 	
 	

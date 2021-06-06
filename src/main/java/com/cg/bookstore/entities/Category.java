@@ -16,9 +16,6 @@ public class Category {
 	private int categoryId;
 	private String categoryName;
 	
-	@OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-	@JsonIgnore
-	private Book book;
 	
 	public Category() {}
 
@@ -38,19 +35,12 @@ public class Category {
 		this.categoryName = categoryName;
 	}
 
-	public Book getBook() {
-		return book;
-	}
-
-	public void setBook(Book book) {
-		this.book = book;
-	}
-
-	public Category(int categoryId, String categoryName, Book book) {
+	
+	public Category(int categoryId, String categoryName) {
 		super();
 		this.categoryId = categoryId;
 		this.categoryName = categoryName;
-		this.book = book;
+		
 	}
 	
 	
